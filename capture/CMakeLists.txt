@@ -20,5 +20,5 @@ find_package(OpenCV REQUIRED)
 find_package(realsense2 REQUIRED)
 
 include_directories( ${OpenCV_INCLUDE_DIRS} ${realsense2_INCLUDE_DIR})
-add_executable(caption caption.cpp)
-target_link_libraries(caption ${OpenCV_LIBS} ${realsense2_LIBRARY})
+add_executable(capture capture.cpp)
+target_link_libraries(capture ${OpenCV_LIBS} ${realsense2_LIBRARY})
