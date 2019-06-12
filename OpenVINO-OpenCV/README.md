@@ -23,3 +23,5 @@ make
 `python image-classification.py`
 
 Tham khảo thêm tại: https://github.com/HoldenCaulfieldRye/caffe
+
+Download model tại: https://github.com/HoldenCaulfieldRye/caffe/tree/master/models/bvlc_reference_rcnn_ilsvrc13 
