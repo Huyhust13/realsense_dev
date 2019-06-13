@@ -22,6 +22,15 @@ make
 
 `python image-classification.py`
 
-Tham khảo thêm tại: https://github.com/HoldenCaulfieldRye/caffe
+Tham khảo model tại: https://github.com/HoldenCaulfieldRye/caffe
 
 Download model tại: https://github.com/HoldenCaulfieldRye/caffe/tree/master/models/bvlc_reference_rcnn_ilsvrc13 
+
+
+Than khảo:
+[1] https://davidmatablog.wordpress.com/2017/12/05/real-time-object-recognition-with-opencv-python-deep-learning-caffe-model/
+
+
+update 130619
+* Vẽ boudingbox đang bị lệch
+* Cần bổ sung thêm về các chế độ input
