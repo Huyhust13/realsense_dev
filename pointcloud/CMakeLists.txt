@@ -15,10 +15,12 @@ elseif(COMPILER_SUPPORTS_CXX0X)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x")
 endif()
 
+FIND_PACKAGE(Threads REQUIRED)
 find_package(realsense2 REQUIRED)
 find_package(OpenGL REQUIRED)
 find_package(PkgConfig REQUIRED)
 pkg_search_module(GLFW REQUIRED glfw3)
+# find_package(glfw3 REQUIRED)
 
 # Find glfw header
 # find_path(GLFW_INCLUDE_DIR GLFW/glfw3.h /usr/include)
@@ -37,7 +39,8 @@ set(INCLUDE_PATH
 set(LIBRARIES 
     ${realsense2_LIBRARY}
     ${OPENGL_LIBRARIES}
-    ${GLFW_LIBRARIES})
+    ${GLFW_LIBRARIES}
+    ${CMAKE_THREAD_LIBS_INIT})
 #pointcloud
 include_directories(${INCLUDE_PATH})
 add_executable(rs-pointcloud rs-pointcloud.cpp ../example.hpp)
