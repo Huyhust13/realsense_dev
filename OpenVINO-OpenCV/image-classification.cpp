@@ -6,8 +6,6 @@
 #include <string>
 
 using namespace std;
-using namespace cv;
-using namespace cv::dnn;
 
 static void show_usage(std::string name)
 {
@@ -25,7 +23,7 @@ void writeMatToFile(cv::Mat &m, const char *filename)
     ofstream fout(filename);
     if (!fout)
     {
-        cout << "File Not Opened" << endl;
+        std::cout << "File Not Opened" << endl;
         return;
     }
 
@@ -41,7 +39,7 @@ void writeMatToFile(cv::Mat &m, const char *filename)
     fout.close();
 }
 
-Mat detection(Mat frame, Net net, vector<string> classes );
+cv::Mat detection(cv::Mat frame, cv::dnn::Net net, vector<string> classes );
 
 int main(int argc, char *argv[])
 {
@@ -49,7 +47,8 @@ int main(int argc, char *argv[])
     bool debug = 0;
 #pragma region load
     // load file model
-    string root = "/media/huynv/Data/14.ComputerVision/1.IntelRealsense/realsense_dev/OpenVINO-OpenCV/";
+    // Thay doi duong dan root toi thu muc trong pc ban
+    string root = "/media/huynv/Data/12.3DComputerVision/realsense_dev/OpenVINO-OpenCV/";
     string labels_file = root + "caffemodel2/MobileNetSSD/labels.txt";
     string model = root + "caffemodel2/MobileNetSSD/MobileNetSSD_deploy.caffemodel";
     string prototxt = root + "caffemodel2/MobileNetSSD/MobileNetSSD_deploy.prototxt";
@@ -58,7 +57,7 @@ int main(int argc, char *argv[])
     std::ifstream ifs(labels_file.c_str());
     if (!ifs.is_open())
     {
-        cout << "error in open file!";
+        std::cout << "error in open file!";
     }
     else
     {
@@ -70,15 +69,14 @@ int main(int argc, char *argv[])
     }
 
     std::cout << "[INFO] loading model..." << std::endl;
-    Net net = readNetFromCaffe(prototxt, model);
+    cv::dnn::Net net = cv::dnn::readNetFromCaffe(prototxt, model);
     // net.setPreferableBackend(DNN_BACKEND_INFERENCE_ENGINE);
-    net.setPreferableTarget(DNN_TARGET_CPU);
-
-
+    net.setPreferableTarget(cv::dnn::DNN_TARGET_CPU);
 #pragma endregion load
-    VideoCapture cap;
+
+    cv::VideoCapture cap;
     string str, device = "/dev/video0";
-    Mat frame;
+    cv::Mat frame;
     int mode = 0;
     for (int i = 0; i < argc; i++)
     {
@@ -106,7 +104,7 @@ int main(int argc, char *argv[])
             cap.open(device);
             if (!cap.isOpened())
             {
-                cout<<"Cannot open video from "<<device<<endl;
+                std::cout<<"Cannot open video from "<<device<<endl;
                 return 0;
             }
             mode = 2;
@@ -117,14 +115,14 @@ int main(int argc, char *argv[])
     switch (mode)
     {
     case 1: // detection in image
-        frame = imread(str, IMREAD_COLOR);
+        frame = cv::imread(str, cv::IMREAD_COLOR);
         frame = detection(frame, net, classes);   
-        namedWindow("frame", CV_WINDOW_NORMAL);
-        imshow("frame", frame);
-        waitKey(0);
+        cv::namedWindow("frame", CV_WINDOW_NORMAL);
+        cv::imshow("frame", frame);
+        cv::waitKey(0);
         return 0;
     case 2: // detection in webcam
-        while (waitKey(1) < 0)
+        while (cv::waitKey(1) < 0)
         {
             // get frame from video
             cap >> frame;
@@ -140,18 +138,18 @@ int main(int argc, char *argv[])
 
 }
 
-Mat detection(Mat frame, Net net, vector<string> classes )
+cv::Mat detection(cv::Mat frame, cv::dnn::Net net, vector<string> classes )
 {
-    Mat frame_resized, blob;
-    cv::resize(frame, frame, Size(300, 300),0,0,CV_INTER_LINEAR);
-    cv::resize(frame, frame_resized, Size(300, 300), 0, 0, CV_INTER_LINEAR);
+    cv::Mat frame_resized, blob;
+    cv::resize(frame, frame, cv::Size(300, 300),0,0,CV_INTER_LINEAR);
+    cv::resize(frame, frame_resized, cv::Size(300, 300), 0, 0, CV_INTER_LINEAR);
     // frame_resized = frame;
-    blob = blobFromImage(frame_resized, 0.007843, Size(300, 300), (127.5, 127.5, 127.5));
+    blob = cv::dnn::blobFromImage(frame_resized, 0.007843, cv::Size(300, 300), (127.5, 127.5, 127.5));
 
     // set the blob as input to the network and perform a forward-pass to
     // obtain our output classification
     net.setInput(blob);
-    Mat detection = net.forward();
+    cv::Mat detection = net.forward();
 
     double confidenceThreshold = 0.6;
     cv::Mat detectionMat(detection.size[2], detection.size[3], CV_32F, detection.ptr<float>());
@@ -183,12 +181,12 @@ Mat detection(Mat frame, Net net, vector<string> classes )
             cv::rectangle(frame, cv::Point(xLeftTop, yLeftTop), cv::Point(xRightBottom, yRightBottom), cv::Scalar(0, 255, 0), 2, 4);
             // cv::circle(frame, cv::Point(xLeftBottom,yLeftBottom), 2, Scalar(255,255,255), 3);
             // cv::circle(frame, cv::Point(xRightTop,yRightTop), 2, Scalar(255,255,255), 3);
-            cv::putText(frame, label, Point(xLeftTop, yLeftTop), FONT_HERSHEY_SIMPLEX, 0.5, Scalar(0, 0, 255), 1);
+            cv::putText(frame, label, cv::Point(xLeftTop, yLeftTop), cv::FONT_HERSHEY_SIMPLEX, 0.5, cv::Scalar(0, 0, 255), 1);
             cout << detectionMat.at<float>(i, 3) << ":" << detectionMat.at<float>(i, 4) << endl;
         }
     }
 
-    double freq = getTickFrequency() / 1000;
+    double freq = cv::getTickFrequency() / 1000;
     std::vector<double> layersTimes;
     double t = net.getPerfProfile(layersTimes) / freq;
     cout << "[INFO] classification took " << t << " ms" << endl;

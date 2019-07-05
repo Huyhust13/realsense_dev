@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 2.8.12)
 
 PROJECT(openvino_opencv)
 
-set(OpenCV_DIR /home/huynv/OpenCV/installation/OpenCV-3.4.4/share/OpenCV)
+set(OpenCV_DIR /home/huynv/OpenCV_installation/installation/OpenCV-3.4.4/share/OpenCV)
 find_package( OpenCV REQUIRED )
 
 set(CMAKE_CXX_STANDARD 11)
